@@ -11,3 +11,9 @@ export enum USER_ROLE {
   Staff, //1
   User //2
 }
+export enum TokenType {
+  AccessToken, // 0
+  RefreshToken, // 1
+  ForgotPasswordToken, // 2
+  EmailVerificationToken // 3
+}
