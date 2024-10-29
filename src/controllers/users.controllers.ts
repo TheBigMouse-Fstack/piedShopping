@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import usersServices from '~/services/users.services'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { RegisterReqbody } from '~/models/schemas/requests/users.request'
@@ -26,28 +26,25 @@ export const loginController = (req: Request, res: Response) => {
   }
 }
 
-export const registerController = async (req: Request<ParamsDictionary, any, RegisterReqbody>, res: Response) => {
-  const { email, password } = req.body
+export const registerController = async (
+  req: Request<ParamsDictionary, any, RegisterReqbody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email } = req.body
   //gọi database, tạo user từ email và password lưu vào collection users
-  try {
-    // kiểm tra email có tồn tại chưa | có ai dùng email này chưa | email có bị trùng ko ?
-    const isDup = await usersServices.checkEmailExist(email)
-    if (isDup) {
-      const customError = new Error('Email already exists')
-      Object.defineProperty(customError, 'message', {
-        enumerable: true
-      })
-      throw customError
-    }
-    const result = await usersServices.register(req.body)
-    res.status(201).json({
-      message: 'Register success!',
-      data: result
+  // kiểm tra email có tồn tại chưa | có ai dùng email này chưa | email có bị trùng ko ?
+  const isDup = await usersServices.checkEmailExist(email)
+  if (isDup) {
+    const customError = new Error('Email already exists')
+    Object.defineProperty(customError, 'message', {
+      enumerable: true
     })
-  } catch (error) {
-    res.status(422).json({
-      message: 'Register failed',
-      error: error
-    })
+    throw customError
   }
+  const result = await usersServices.register(req.body)
+  res.status(201).json({
+    message: 'Register success!',
+    data: result
+  })
 }

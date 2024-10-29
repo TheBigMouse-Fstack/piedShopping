@@ -13,6 +13,11 @@ app.use(express.json())
 // Gán router cho đường dẫn /users
 app.use('/users', userRouter)
 
+app.use((err, req, res, next) => {
+  res.status(400).json({
+    message: err.message
+  })
+})
 // Lắng nghe cổng PORT
 app.listen(PORT, () => {
   console.log(`Project này đang chạy trên post ${PORT}`)
