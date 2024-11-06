@@ -10,8 +10,13 @@ export const wrapAsync = (func: any) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       await func(req, res, next)
-    } catch (error) {
-      next(error)
+    } catch (error: any) {
+      if (error.message.includes('network') || error.message.includes('ENOTFOUND')) {
+        // Kiểm tra lỗi có liên quan đến mất mạng hay không
+        res.status(503).json({ message: 'Mất kết nối mạng. Vui lòng kiểm tra kết nối WiFi và thử lại.' })
+      } else {
+        next(error)
+      }
     }
   }
 }

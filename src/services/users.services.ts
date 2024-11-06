@@ -1,23 +1,31 @@
 import User from '~/models/schemas/Userschema'
 import databaseServices from './database.services'
-import { RegisterReqbody } from '~/models/schemas/requests/users.request'
+import { LoginReqBody, RegisterReqBody } from '~/models/requests/users.request'
 import { hashPassword } from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
 import { TokenType } from '~/constants/enums'
 import dotenv from 'dotenv'
+import { PassThrough } from 'stream'
+import { USERS_MESSAGES } from '~/constants/mesages'
+import { ErrorWithStatus } from '~/models/Errors'
+import HTTP_STATUS from '~/constants/httpStatus'
+import RefreshToken from '~/models/schemas/RefreshToken.schema'
+import { ObjectId } from 'mongodb'
 dotenv.config()
 
 class UsersServices {
-  private signAccessToken(userId: string) {
+  private signAccessToken(user_id: string) {
     return signToken({
-      payload: { userId, TokenType: TokenType.AccessToken },
+      payload: { user_id, TokenType: TokenType.AccessToken },
+      privateKey: process.env.JWT_SECRET_ACCESS_TOKEN as string,
       options: { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_IN }
     })
   }
 
-  private signRefreshToken(userId: string) {
+  private signRefreshToken(user_id: string) {
     return signToken({
-      payload: { userId, TokenType: TokenType.RefreshToken },
+      payload: { user_id, TokenType: TokenType.RefreshToken },
+      privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string,
       options: { expiresIn: process.env.REFRESH_TOKEN_EXPIRE_IN }
     })
   }
@@ -28,7 +36,7 @@ class UsersServices {
     return !!user
   }
 
-  async register(payload: RegisterReqbody) {
+  async register(payload: RegisterReqBody) {
     // call database and create user from email, password
     //collection users
     const result = await databaseServices.users.insertOne(
@@ -40,7 +48,65 @@ class UsersServices {
       this.signAccessToken(userId),
       this.signRefreshToken(userId)
     ])
+    // save rf token
+    await databaseServices.refreshTokens.insertOne(
+      new RefreshToken({
+        token: refresh_token,
+        user_id: new ObjectId(userId)
+      })
+    )
+    //
     return { access_token, refresh_token }
+  }
+
+  async login(payload: LoginReqBody) {
+    const user = await databaseServices.users.findOne({
+      email: payload.email,
+      password: hashPassword(payload.password)
+    })
+    // NO USER = FAILED
+    if (!user) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+        message: USERS_MESSAGES.EMAIL_OR_PASSWORD_IS_INCORRECT
+      })
+    }
+    const user_id = user._id.toString()
+    const [access_token, refresh_token] = await Promise.all([
+      this.signAccessToken(user_id),
+      this.signRefreshToken(user_id)
+    ])
+    await databaseServices.refreshTokens.insertOne(
+      new RefreshToken({
+        token: refresh_token,
+        user_id: new ObjectId(user_id)
+      })
+    )
+    return { access_token, refresh_token }
+  }
+
+  async checkRefreshToken({ user_id, refresh_token }: { user_id: string; refresh_token: string }) {
+    console.log({ user_id, refresh_token })
+
+    const refreshToken = await databaseServices.refreshTokens.findOne({
+      user_id: new ObjectId(user_id),
+      token: refresh_token
+    })
+    // NO REFRESH TOKEN = FAILED
+
+    if (!refreshToken) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.UNAUTHORIZED,
+        message: USERS_MESSAGES.REFRESH_TOKEN_IS_INVALID
+      })
+    }
+    //
+    return refreshToken
+  }
+
+  logout(refresh_token: string) {
+    // xóa token trong db
+    return databaseServices.refreshTokens.deleteOne({ token: refresh_token })
   }
 }
 // create instance

@@ -1,6 +1,7 @@
 import express from 'express'
 import userRouter from './routes/users.routers' // Router cho người dùng
 import databaseServices from './services/database.services' // Kết nối database
+import { defaultErrorHandler } from './middlewares/errors.middlewares'
 
 // Khởi tạo server
 const app = express()
@@ -13,11 +14,7 @@ app.use(express.json())
 // Gán router cho đường dẫn /users
 app.use('/users', userRouter)
 
-app.use((err, req, res, next) => {
-  res.status(400).json({
-    message: err.message
-  })
-})
+app.use(defaultErrorHandler)
 // Lắng nghe cổng PORT
 app.listen(PORT, () => {
   console.log(`Project này đang chạy trên post ${PORT}`)
