@@ -25,13 +25,40 @@ export const USERS_MESSAGES = {
   DATE_OF_BIRTH_BE_ISO8601: 'Date of birth must be ISO8601',
   //user
   EMAIL_OR_PASSWORD_IS_INCORRECT: 'Email or password is incorrect',
-  // SUCCESS
-  LOGIN_SUCCESS: 'Login success',
-  LOGOUT_SUCCESS: 'Logout success',
-  REGISTER_SUCCESS: 'Register success',
-  //Token
+  LOGIN_SUCCESS: 'Login successfully',
+  LOGOUT_SUCCESS: 'Logout successfully',
+  REGISTER_SUCCESS: 'Register successfully',
   ACCESS_TOKEN_IS_REQUIRED: 'Access token is required',
   REFRESH_TOKEN_IS_REQUIRED: 'Refresh token is required',
-  ACCESS_TOKEN_IS_INVALID: 'Access token is invalid',
-  REFRESH_TOKEN_IS_INVALID: 'Refresh token is invalid'
-} as const
+  REFRESH_TOKEN_IS_INVALID: 'Refresh token is invalid',
+
+  //email verify
+  EMAIL_VERIFY_TOKEN_IS_REQUIRED: 'Email verify token is required',
+  EMAIL_VERIFY_TOKEN_IS_INVALID: 'Email verify token is invalid',
+  VERIFY_EMAIL_SUCCESS: 'Verify email is successfully',
+  EMAIL_HAS_BEEN_VERIFIED: 'Email has been verified',
+  EMAIL_HAS_BEEN_BANNED: 'Email has been banned',
+  FORGOT_PASSWORD_TOKEN_IS_REQUIRED: 'Forgot password token is required',
+  FORGOT_PASSWORD_TOKEN_IS_INVALID: 'Forgot password token is invalid',
+  RESEND_EMAIL_VERIFY_TOKEN_SUCCESS: 'Resend email verify token successfully',
+  USER_NOT_FOUND: 'User not found',
+  CHECK_EMAIL_TO_RESET_PASSWORD: 'Check Email to reset password',
+  VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESS: 'Verify forgot password token successfully',
+  RESET_PASSWORD_SUCCESS: 'Reset password successfully',
+  GET_ME_SUCCESS: 'Get me successfully',
+  BIO_MUST_BE_A_STRING: 'Bio must be a string',
+  BIO_LENGTH_MUST_BE_LESS_THAN_200: 'Bio length must be less than 200',
+  LOCATION_MUST_BE_A_STRING: 'Location must be a string',
+  LOCATION_LENGTH_MUST_BE_LESS_THAN_200: 'Location length must be less than 200',
+  WEBSITE_MUST_BE_A_STRING: 'Website must be a string',
+  WEBSITE_LENGTH_MUST_BE_LESS_THAN_200: 'Website length must be less than 200',
+  USERNAME_MUST_BE_A_STRING: 'Username must be a string',
+  USERNAME_LENGTH_MUST_BE_LESS_THAN_50: 'Username length must be less than 50',
+  IMAGE_URL_MUST_BE_A_STRING: 'Image url must be a string',
+  IMAGE_URL_LENGTH_MUST_BE_LESS_THAN_400: 'Image url length must be less than 400',
+  UPDATE_PROFILE_SUCCESS: 'Update profile success',
+  USER_NOT_VERIFIED: 'User not verified',
+  USERNAME_ALREADY_EXISTS: 'Username already exists',
+  USERNAME_IS_INVALID: 'Username is invalid',
+  EMAIL_NOT_VERIFIED: 'Email not verified'
+} as const //để k ai chỉnh đc

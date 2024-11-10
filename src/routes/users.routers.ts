@@ -1,44 +1,169 @@
 import express from 'express'
-import { loginController, logoutController, registerController } from '~/controllers/users.controllers'
+import {
+  forgotPasswordController,
+  getMeController,
+  loginController,
+  logoutController,
+  registerController,
+  resendVerifyEmailController,
+  resetPasswordController,
+  updateMeController,
+  verifyEmailTokenController,
+  verifyForgotPasswordTokenController
+} from '~/controllers/users.controllers'
 import {
   accessTokenValidator,
+  emailVerifyTokenValidator,
+  forgotPassWordTokenValidator,
+  forgotPassWordValidator,
   loginValidator,
   refreshTokenValidator,
-  registerValidator
+  registerValidator,
+  resetPasswordTokenValidator,
+  updateMeValidator
 } from '~/middlewares/users.middlewares'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import { wrapAsync } from '~/utils/handlers'
 
 const userRouter = express.Router()
 
-// ---------------------------------------------------LOGIN ROUTE----------------------------------------------
-userRouter.post('/login', loginValidator, wrapAsync(loginController))
+//Để loginValidator trong này là hợp lệ vì đây là middleware
+//Khi người dùng truy cập vào localhost:3000/users/login thì hàm loginValidator sẽ chạy
 
-// ---------------------------------------------------REGISTER ROUTE----------------------------------------------
-// Route đăng ký
 /*
-desc: Resgister new user
-path: /register
-method: POST
-body:{
-    name: string
-    email: string
-    password: string
-    confirm_password: string
-    date_of_birth: String có dạng ISO 8601
-    }
+desc: Register a new user
+Path: /register
+Method: post
+Body:{
+    name: String,
+    email: String,
+    password: String,
+    confirm_password: String,
+    date_of_birth: String có dạng ISO8601
+}
 */
+//next mà trong đó có bug thì nó sẽ đưa xuống handle cuối cùng
+//throw có 1 nhược điểm k chạy trên đc async thì phải dùng trycatch next
+//!Throw trong async ko được
+//!mặc định: server rớt mạng thì throw và dùng trycatch để next
 userRouter.post('/register', registerValidator, wrapAsync(registerController))
 
-// ---------------------------------------------------LOGOUT----------------------------------------------
-// DESC: Logout
-// path: /Logout
-// method: POST
-// headers{
-//     Authorization: 'Bearer <access_token>'
-// }
-// refesh_token: string
+/*desc: login
+path: users/login
+method: post
+body:{
+    email: string,
+    password: string
+}
 
+*/
+userRouter.post('/login', loginValidator, wrapAsync(loginController))
+
+/*desc: logout
+users: /logout
+method: post
+header:{
+    Authorization: 'Bearer <access_token>'
+}
+body:{
+    refresh_token: string
+}
+*/
+// tách ra access và refresh tại vì mình sử dụng accesss nhiều hơn
 userRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapAsync(logoutController))
-/////////////////////////////////
+/*
+desc: verify email
+sự kiện này diễn ra khi người dùng nhấn vào link có trong email của họ
+thì evt sẽ được gửi lên server be thông qua req.query
+path: users/verify-email/?email_verify_token=string
+method: get
+*/
+userRouter.get(
+  '/verify-email', //
+  emailVerifyTokenValidator,
+  wrapAsync(verifyEmailTokenController)
+)
+
+/*desc: resend email verify token
+người dùng sẽ dùng chức năng này khi làm mất, lạc email
+phải đăng nhập thì mới cho verify
+headers{
+    Athorization: 'Bearer <access_token>'
+}
+method: post 
+path: users/resend-email-verify-token
+*/
+
+userRouter.post(
+  '/resend-verify-email',
+  accessTokenValidator, //
+  wrapAsync(resendVerifyEmailController)
+)
+
+/*desc: forgot password
+    Khi quên mật khẩu thì dùng chức năng này
+    Path: users/forgot-password
+    method: post
+    body:{
+        email: string
+        
+    }
+ */
+userRouter.post(
+  '/forgot-password',
+  forgotPassWordValidator, //
+  wrapAsync(forgotPasswordController)
+)
+
+/*
+desc: verify forgot password Token
+route kiểm tra forgot_password_ token và còn hiệu lực không
+path: users/verify-forgot-password
+method: post
+body:{
+  forgot_password_token: string
+}
+
+*/
+
+userRouter.post(
+  '/verify-forgot-password',
+  forgotPassWordTokenValidator, //kiểm tra forrgot_password_token
+  wrapAsync(verifyForgotPasswordTokenController) //xử lý logic
+)
+
+/* desc: reset-password
+path: users/reset-password
+method: post
+body: {
+  password: string,
+  confirm_password: string,
+  forgot_password_token: string
+}
+*/
+userRouter.post(
+  '/reset-password',
+  forgotPassWordTokenValidator, // kiểm tra forgot_password_token
+  resetPasswordTokenValidator, //kiểm tra password, confirm_password, forgot_password_token
+  wrapAsync(resetPasswordController) // tiến hành đổi mk
+)
+
+/*
+des: update profile của user
+path: '/me'
+method: patch
+Header: {Authorization: Bearer <access_token>}
+body: {
+  name?: string
+  date_of_birth?: Date
+  bio?: string // optional
+  location?: string // optional
+  website?: string // optional
+  username?: string // optional
+  avatar?: string // optional
+  cover_photo?: string // optional}
+*/
+
+userRouter.patch('/me', accessTokenValidator, updateMeValidator, wrapAsync(updateMeController))
+
 export default userRouter

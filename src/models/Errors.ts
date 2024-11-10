@@ -1,20 +1,19 @@
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/mesages'
 
-// file này lưu các định nghĩa của các loại lỗi trong hệ thống
+//File này lưu các định nghĩa của các loại lỗi
 export class ErrorWithStatus {
-  message: string
   status: number
-  constructor({ message, status }: { message: string; status: number }) {
-    this.message = message
+  message: string
+  constructor({ status, message }: { status: number; message: string }) {
     this.status = status
+    this.message = message
   }
 }
-
 type ErrorsType = Record<
   string,
   {
-    message: string
+    msg: string
     [key: string]: any //này nghĩa ra ngoài ra muốn thêm vào gì thì thêm
   }
 >
