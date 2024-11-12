@@ -2,11 +2,13 @@ import { NextFunction, Request, Response } from 'express'
 import usersServices from '~/services/users.services'
 import { ParamsDictionary } from 'express-serve-static-core'
 import {
+  ChangePasswordReqBody,
   LoginReqBody,
   LogoutReqBody,
+  RefreshTokenReqBody,
   RegisterReqBody,
   ResetPasswordReqBody,
-  TokenPayLoad,
+  TokenPayload,
   UpdateMeReqBody,
   VerifyEmailReqQuery,
   VerifyForgotPassWordTokenReqBody
@@ -68,8 +70,8 @@ export const logoutController = async (
 ) => {
   //so user_id trong payload của ac và rf có phải là 1 không?
   const { refresh_token } = req.body
-  const { user_id: user_id_at } = req.decode_authorization as TokenPayLoad
-  const { user_id: user_id_rf } = req.decode_refresh_token as TokenPayLoad
+  const { user_id: user_id_at } = req.decode_authorization as TokenPayload
+  const { user_id: user_id_rf } = req.decode_refresh_token as TokenPayload
   if (user_id_at !== user_id_rf) {
     throw new ErrorWithStatus({
       status: HTTP_STATUS.UNAUTHORIZED, //422
@@ -97,7 +99,7 @@ export const verifyEmailTokenController = async (
   //khi họ bấm vào link họ sẽ gửi email_verify_token lên thông qua
   //req.query
   const { email_verify_token } = req.query
-  const { user_id } = req.decode_email_verify_token as TokenPayLoad // không biết user có gửi lên  không nên phải định nghĩa rõ ra
+  const { user_id } = req.decode_email_verify_token as TokenPayload // không biết user có gửi lên  không nên phải định nghĩa rõ ra
 
   //kiểm tra xem trong database có user sở hữu là user_id trong payload
   //                                    và email_verify_token không
@@ -126,7 +128,7 @@ export const resendVerifyEmailController = async (
   next: NextFunction
 ) => {
   //dùng user_id tìm user đó
-  const { user_id } = req.decode_authorization as TokenPayLoad
+  const { user_id } = req.decode_authorization as TokenPayload
   const user = await usersServices.findUserById(user_id)
   if (!user) {
     throw new ErrorWithStatus({
@@ -185,7 +187,7 @@ export const verifyForgotPasswordTokenController = async (
   //mình đã xác thực mã rồi
   //nhưng  mà chỉ thực thi khi forrgot_password_token còn hiệu lực với user
   //nên mình cần tìm user thông qua user_id
-  const { user_id } = req.decode_forgot_password_token as TokenPayLoad
+  const { user_id } = req.decode_forgot_password_token as TokenPayload
   //tìm user nào đang có 2 thông tin trên, nếu không tìm được nghĩa là forrgot_password_token
   // đã được thay thế hoặc đã bị xóa rồi
   await usersServices.checkForgotPasswordToken({ user_id, forgot_password_token })
@@ -204,7 +206,7 @@ export const resetPasswordController = async (
   //mình đã xác thực mã rồi
   //nhưng  mà chỉ thực thi khi forrgot_password_token còn hiệu lực với user
   //nên mình cần tìm user thông qua user_id
-  const { user_id } = req.decode_forgot_password_token as TokenPayLoad
+  const { user_id } = req.decode_forgot_password_token as TokenPayload
   //tìm user nào đang có 2 thông tin trên, nếu không tìm được nghĩa là forrgot_password_token
   // đã được thay thế hoặc đã bị xóa rồi
   await usersServices.checkForgotPasswordToken({ user_id, forgot_password_token })
@@ -217,7 +219,7 @@ export const resetPasswordController = async (
 
 export const getMeController = async (req: Request<ParamsDictionary, any, any>, res: Response, next: NextFunction) => {
   //người dùng đã gửi lên access token để xác thực họ đã đăng nhập và yêu cầu thông tin từ mình
-  const { user_id } = req.decode_authorization as TokenPayLoad
+  const { user_id } = req.decode_authorization as TokenPayload
   //dùng user_id tìm user
   const userInfor = await usersServices.getMe(user_id)
   res.status(HTTP_STATUS.OK).json({
@@ -227,12 +229,12 @@ export const getMeController = async (req: Request<ParamsDictionary, any, any>, 
 }
 
 export const updateMeController = async (
-  req: Request<ParamsDictionary, any, any, UpdateMeReqBody>,
+  req: Request<ParamsDictionary, any, UpdateMeReqBody>,
   res: Response,
   next: NextFunction
 ) => {
   // người dùng truyền lên access token => user_id
-  const { user_id } = req.decode_authorization as TokenPayLoad
+  const { user_id } = req.decode_authorization as TokenPayload
   // Nội dung muốn cập nhập
   const payload = req.body // Kiểm tra xem uẻ này đã vẻify hay chưa
   const isVerified = await usersServices.checkEmailVerified(user_id)
@@ -241,5 +243,34 @@ export const updateMeController = async (
   res.status(HTTP_STATUS.OK).json({
     message: USERS_MESSAGES.UPDATE_PROFILE_SUCCESS,
     userInfor
+  })
+}
+
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decode_authorization as TokenPayload
+  const { old_password, password } = req.body
+  await usersServices.changePassword({ user_id, old_password, password })
+  res.status(HTTP_STATUS.OK).json({
+    message: USERS_MESSAGES.CHANGE_PASSWORD_SUCCESS
+  })
+}
+
+export const refreshTokenController = async (
+  req: Request<ParamsDictionary, any, RefreshTokenReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decode_refresh_token as TokenPayload
+  const { refresh_token } = req.body
+  await usersServices.checkRefreshToken({ user_id, refresh_token })
+  // nếu mà kiểm tra k có bug gì thì mình tiến hành refresh cho người ta
+  const result = await usersServices.refreshToken({ user_id, refresh_token })
+  res.status(HTTP_STATUS.OK).json({
+    message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS,
+    result
   })
 }

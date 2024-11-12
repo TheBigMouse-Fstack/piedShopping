@@ -15,7 +15,7 @@ export interface LoginReqBody {
   email: string
   password: string
 }
-export interface TokenPayLoad extends JwtPayload {
+export interface TokenPayload extends JwtPayload {
   user_id: string
   token_type: TokenType
 }
@@ -36,6 +36,7 @@ export interface ResetPasswordReqBody {
   confirm_password: string
   forgot_password_token: string
 }
+
 export interface UpdateMeReqBody {
   name?: string
   date_of_birth?: string //vì ngta truyền lên string dạng ISO8601, k phải date
@@ -47,3 +48,13 @@ export interface UpdateMeReqBody {
   cover_photo?: string
 }
 //vì đây là route patch nên ngta truyền thiếu 1 trong các prop trên cũng k sao
+
+export interface ChangePasswordReqBody {
+  old_password: string
+  password: string
+  confirm_password: string
+}
+
+export interface RefreshTokenReqBody {
+  refresh_token: string
+}
