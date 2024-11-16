@@ -22,7 +22,7 @@ export const defaultErrorHandler = (error: any, req: Request, res: Response, nex
     // Trả về `500 Internal Server Error` và một số thông tin cơ bản của lỗi
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       message: error.message || 'Internal server error occurred',
-      errorInfo: omit(error, ['status'])
+      errorInfo: omit(error, ['stack'])
     })
   }
 }
