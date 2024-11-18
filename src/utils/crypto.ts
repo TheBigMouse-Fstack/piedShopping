@@ -1,5 +1,6 @@
 import { createHash } from 'crypto'
 import env from 'dotenv'
+env.config()
 //viết hàm nhận vào content nào đó mã hóa thành sha256
 function sha256(content: string) {
   return createHash('sha256').update(content).digest('hex')
