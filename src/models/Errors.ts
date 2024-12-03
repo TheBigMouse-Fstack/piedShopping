@@ -1,5 +1,5 @@
 import HTTP_STATUS from '~/constants/httpStatus'
-import { USERS_MESSAGES } from '~/constants/mesages'
+import { USERS_MESSAGES } from '~/constants/messages'
 
 //File này lưu các định nghĩa của các loại lỗi
 export class ErrorWithStatus {

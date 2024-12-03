@@ -5,7 +5,7 @@ import { wrapAsync } from '~/utils/handlers'
 const staticRouter = Router()
 
 // staticRouter.use('/image/', express.static(UPLOAD_IMAGE_DIR))
-staticRouter.get('/image/:filename', wrapAsync(serveImageController))
+staticRouter.get('/image/:filenam   e', wrapAsync(serveImageController))
 staticRouter.get('/video/:filename', wrapAsync(serveVideoController))
 // filename: param
 

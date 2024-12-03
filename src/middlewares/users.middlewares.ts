@@ -2,8 +2,9 @@ import { Request, Response, NextFunction } from 'express'
 import { checkSchema, ParamSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { USERS_MESSAGES } from '~/constants/mesages'
+import { USERS_MESSAGES } from '~/constants/messages'
 import { REGEX_USERNAME } from '~/constants/regex'
+
 import { ErrorWithStatus } from '~/models/Errors'
 import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
@@ -92,7 +93,7 @@ const confirmPasswordSchema: ParamSchema = {
 }
 
 // Forgot password token schema
-const forgotPassswordTokenSchema: ParamSchema = {
+const forgotPasswordTokenSchema: ParamSchema = {
   notEmpty: {
     errorMessage: USERS_MESSAGES.FORGOT_PASSWORD_TOKEN_IS_REQUIRED
   },
@@ -324,7 +325,7 @@ export const forgotPassWordValidator = validate(
 export const forgotPassWordTokenValidator = validate(
   checkSchema(
     {
-      forgot_password_token: forgotPassswordTokenSchema
+      forgot_password_token: forgotPasswordTokenSchema
     },
     ['body']
   )

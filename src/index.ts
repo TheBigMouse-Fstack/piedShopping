@@ -4,16 +4,24 @@ import databaseServices from './services/database.services' // Kết nối datab
 import { defaultErrorHandler } from './middlewares/errors.middlewares'
 import mediaRouter from './routes/medias.routers'
 import { initFolder } from './utils/file'
-import staticRouter from './routes/static.router'
+import staticRouter from './routes/static.routers'
+import dotenv from 'dotenv'
+import { MongoClient } from 'mongodb'
+dotenv.config()
 
 // Khởi tạo server
 const app = express()
-databaseServices.connect() // Kết nối đến database
+// Kết nối đến database
+databaseServices.connect().then(() => {
+  databaseServices.createIndexes()
+  databaseServices.createIndexRefreshTokens()
+})
+
 // kiểm tra có thiếu folder nào ko
 initFolder()
 // Middleware để chuyển đổi req.body thành JSON
 app.use(express.json())
-
+//////
 // Gán router cho đường dẫn /users
 app.use('/users', userRouter)
 app.use('/medias', mediaRouter)

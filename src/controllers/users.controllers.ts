@@ -15,7 +15,7 @@ import {
 } from '~/models/requests/users.request'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { USERS_MESSAGES } from '~/constants/mesages'
+import { USERS_MESSAGES } from '~/constants/messages'
 import { UserVerifyStatus } from '~/constants/enums'
 
 //controller là handler có nhiệm vụ tập kết dữ liệu từ người dùng
@@ -264,11 +264,11 @@ export const refreshTokenController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { user_id } = req.decode_refresh_token as TokenPayload
+  const { user_id, exp } = req.decode_refresh_token as TokenPayload
   const { refresh_token } = req.body
   await usersServices.checkRefreshToken({ user_id, refresh_token })
   // nếu mà kiểm tra k có bug gì thì mình tiến hành refresh cho người ta
-  const result = await usersServices.refreshToken({ user_id, refresh_token })
+  const result = await usersServices.refreshToken({ user_id, refresh_token, exp })
   res.status(HTTP_STATUS.OK).json({
     message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS,
     result
