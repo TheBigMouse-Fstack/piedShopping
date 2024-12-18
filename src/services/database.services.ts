@@ -2,8 +2,11 @@
 import { log } from 'console'
 import { Collection, Db, MongoClient } from 'mongodb'
 import dotenv from 'dotenv'
-import User from '~/models/schemas/Userschema'
+import User from '~/models/schemas/Users.chema'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
+import Brand from '~/models/schemas/Brand.schema'
+import Category from '~/models/schemas/Category.schema'
+import Product from '~/models/schemas/Productschema'
 
 // Load environment variables from the .env file
 dotenv.config()
@@ -51,22 +54,25 @@ class DatabaseServices {
     }
   }
 
-  /**
-   * users (getter)
-   * - Provides access to the `users` collection in the database.
-   * - The collection name is sourced from the environment variable DB_USERS_COLLECTION.
-   */
+  //
   get users(): Collection<User> {
     return this.db.collection(process.env.DB_USERS_COLLECTION as string)
   }
-
-  /**
-   * refreshTokens (getter)
-   * - Provides access to the `refreshTokens` collection in the database.
-   * - The collection name is sourced from the environment variable DB_REFRESH_TOKENS_COLLECTION.
-   */
+  //
   get refreshTokens(): Collection<RefreshToken> {
     return this.db.collection(process.env.DB_REFRESH_TOKENS_COLLECTION as string)
+  }
+  //
+  get brands(): Collection<Brand> {
+    return this.db.collection(process.env.DB_BRANDS_COLLECTION as string)
+  }
+  //
+  get categories(): Collection<Category> {
+    return this.db.collection(process.env.DB_CATEGORIES_COLLECTION as string)
+  }
+  //
+  get products(): Collection<Product> {
+    return this.db.collection(process.env.DB_PRODUCTS_COLLECTION as string)
   }
 
   //create index

@@ -12,6 +12,11 @@ export enum USER_ROLE {
   User //2
 }
 
+export enum PRODUCT_STATUS {
+  Active,
+  Stock
+}
+
 export enum TokenType {
   AccessToken, // 0
   RefreshToken, // 1

@@ -7,6 +7,8 @@ import { initFolder } from './utils/file'
 import staticRouter from './routes/static.routers'
 import dotenv from 'dotenv'
 import { MongoClient } from 'mongodb'
+import brandRouter from './routes/brands.routers'
+
 dotenv.config()
 
 // Khởi tạo server
@@ -26,6 +28,7 @@ app.use(express.json())
 app.use('/users', userRouter)
 app.use('/medias', mediaRouter)
 app.use('/static', staticRouter)
+app.use('/brands', brandRouter)
 
 app.use(defaultErrorHandler)
 // Lắng nghe cổng PORT

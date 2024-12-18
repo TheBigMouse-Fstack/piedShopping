@@ -4,6 +4,7 @@ export const USERS_MESSAGES = {
   USER_NOT_FOUND: 'User not found',
   USER_NOT_VERIFIED: 'User not verified',
   EMAIL_NOT_VERIFIED: 'Email not verified',
+  USER_IS_NOT_ADMIN: 'User is not admin',
 
   // Name
   NAME_IS_REQUIRED: 'Name is required',
@@ -76,4 +77,25 @@ export const USERS_MESSAGES = {
   // Image URLs
   IMAGE_URL_MUST_BE_A_STRING: 'Image url must be a string',
   IMAGE_URL_LENGTH_MUST_BE_LESS_THAN_400: 'Image url length must be less than 400'
+} as const
+
+export const BRANDS_MESSAGE = {
+  BRAND_NAME_IS_REQUIRED: 'Brand name is required',
+  BRAND_NAME_MUST_BE_A_STRING: 'Brand name must be a string',
+  CREATE_BRAND_SUCCESS: 'Create brand successfully',
+  CREATE_NAME_LENGTH_MUST_BE_LESS_THAN_100: 'Brand name length must be less than 100',
+  BRAND_NAME_ALREADY_EXISTS: 'Brand name already exists',
+  GET_BRAND_SUCCESS: 'Get brand successfully',
+  GET_BRANDS_SUCCESS: 'Get brands successfully',
+  UPDATE_BRAND_SUCCESS: 'Update brand successfully',
+  DELETE_BRAND_SUCCESS: 'Delete brand successfully',
+  HOTLINE_IS_REQUIRED: 'Hotline is required',
+  HOTLINE_LENGTH_MUST_BE_FROM_1_TO_12: 'Hotline length must be from 1 to 12',
+  HOTLINE_IS_INVALID: 'Hotline is invalid',
+  ADDRESS_IS_REQUIRED: 'Address is required',
+  ADDRESS_MUST_BE_A_STRING: 'Address must be a string',
+  ADDRESS_LENGTH_MUST_BE_LESS_THAN_200: 'Address length must be less than 200',
+  GET_BRAND_BY_ID_SUCCESS: 'Get brand by id successfully',
+  BRAND_NOT_FOUND: 'Brand not found',
+  GET_ALL_BRANDS_SUCCESS: 'Get all brands successfully'
 } as const
