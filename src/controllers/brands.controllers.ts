@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
-import { CreateBrandReqBody, getBrandReqParams } from '~/models/requests/brands.request'
+import { CreateBrandReqBody, GetBrandReqParams } from '~/models/requests/brands.request'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { TokenPayload } from '~/models/requests/users.request'
 import brandsServices from '~/services/brands.services'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ErrorWithStatus } from '~/models/Errors'
 import { BRANDS_MESSAGE, USERS_MESSAGES } from '~/constants/messages'
+import usersServices from '~/services/users.services'
 
 export const createBrandController = async (
   req: Request<ParamsDictionary, any, CreateBrandReqBody>,
@@ -13,7 +14,7 @@ export const createBrandController = async (
   next: NextFunction
 ) => {
   const { user_id } = req.decode_authorization as TokenPayload
-  const isAdmin = await brandsServices.isAdmin(user_id)
+  const isAdmin = await usersServices.isAdmin(user_id)
   if (!isAdmin) {
     throw new ErrorWithStatus({
       status: HTTP_STATUS.FORBIDDEN,
@@ -28,7 +29,7 @@ export const createBrandController = async (
 }
 
 export const getBrandByIdController = async (
-  req: Request<getBrandReqParams>, //
+  req: Request<GetBrandReqParams>, //
   res: Response,
   next: NextFunction
 ) => {

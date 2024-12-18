@@ -7,7 +7,7 @@ import dotenv from 'dotenv'
 import { ErrorWithStatus } from '~/models/Errors'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import { ObjectId } from 'mongodb'
-import { TokenType, UserVerifyStatus } from '~/constants/enums'
+import { TokenType, USER_ROLE, UserVerifyStatus } from '~/constants/enums'
 import { USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { verify } from 'crypto'
@@ -64,6 +64,11 @@ class UsersServices {
   }
 
   // ========================== USER CHECK METHODS ==========================
+
+  async isAdmin(user_id: string) {
+    const user = await databaseServices.users.findOne({ _id: new ObjectId(user_id), role: USER_ROLE.Admin })
+    return Boolean(user)
+  }
 
   async checkEmailExist(email: string) {
     const user = await databaseServices.users.findOne({ email })

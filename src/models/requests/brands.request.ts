@@ -6,6 +6,6 @@ export interface CreateBrandReqBody {
   address: string
 }
 
-export interface getBrandReqParams extends ParamsDictionary {
+export interface GetBrandReqParams extends ParamsDictionary {
   id: string
 }

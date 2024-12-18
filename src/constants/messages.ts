@@ -99,3 +99,21 @@ export const BRANDS_MESSAGE = {
   BRAND_NOT_FOUND: 'Brand not found',
   GET_ALL_BRANDS_SUCCESS: 'Get all brands successfully'
 } as const
+
+export const CATEGORIES_MESSAGE = {
+  CATEGORY_NAME_IS_REQUIRED: 'Category name is required',
+  CATEGORY_NAME_MUST_BE_A_STRING: 'Category name must be a string',
+  CREATE_CATEGORY_SUCCESS: 'Create category successfully',
+  CREATE_NAME_LENGTH_MUST_BE_LESS_THAN_100: 'Category name length must be less than 100',
+  CATEGORY_NAME_ALREADY_EXISTS: 'Category name already exists',
+  GET_CATEGORY_SUCCESS: 'Get category successfully',
+  GET_CATEGORIES_SUCCESS: 'Get categories successfully',
+  UPDATE_CATEGORY_SUCCESS: 'Update category successfully',
+  DELETE_CATEGORY_SUCCESS: 'Delete category successfully',
+  CATEGORY_NOT_FOUND: 'Category not found',
+  GET_ALL_CATEGORIES_SUCCESS: 'Get all categories successfully',
+  DESCRIPTION_IS_REQUIRED: 'Description is required',
+  DESCRIPTION_MUST_BE_A_STRING: 'Description must be a string',
+  DESCRIPTION_LENGTH_MUST_BE_LESS_THAN_300: 'Description length must be less than 300',
+  GET_CATEGORY_BY_ID_SUCCESS: 'Get category by id successfully'
+} as const

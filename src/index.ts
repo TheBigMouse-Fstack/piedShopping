@@ -6,8 +6,8 @@ import mediaRouter from './routes/medias.routers'
 import { initFolder } from './utils/file'
 import staticRouter from './routes/static.routers'
 import dotenv from 'dotenv'
-import { MongoClient } from 'mongodb'
 import brandRouter from './routes/brands.routers'
+import categoryRouter from './routes/categories.routers'
 
 dotenv.config()
 
@@ -29,6 +29,7 @@ app.use('/users', userRouter)
 app.use('/medias', mediaRouter)
 app.use('/static', staticRouter)
 app.use('/brands', brandRouter)
+app.use('/categories', categoryRouter)
 
 app.use(defaultErrorHandler)
 // Lắng nghe cổng PORT
