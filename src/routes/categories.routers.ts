@@ -5,7 +5,7 @@ import {
   getCategoryByIdController
 } from '~/controllers/categories.controllers'
 import { createCategoriesValidator } from '~/middlewares/categories.middlewares'
-import { accessTokenValidator } from '~/middlewares/users.middlewares'
+import { accessTokenValidator, idMongoParamValidator } from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handlers'
 
 const categoryRouter = express.Router()
@@ -28,7 +28,7 @@ categoryRouter.post('/', accessTokenValidator, createCategoriesValidator, wrapAs
     method: GET
 */
 
-categoryRouter.get('/:id', wrapAsync(getCategoryByIdController))
+categoryRouter.get('/:id', idMongoParamValidator, wrapAsync(getCategoryByIdController))
 
 /*
     Description: Get all categories

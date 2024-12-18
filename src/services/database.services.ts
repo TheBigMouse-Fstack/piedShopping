@@ -6,7 +6,8 @@ import User from '~/models/schemas/Users.chema'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import Brand from '~/models/schemas/Brand.schema'
 import Category from '~/models/schemas/Category.schema'
-import Product from '~/models/schemas/Productschema'
+import Product from '~/models/schemas/Product.schema'
+import ProductMedia from '~/models/schemas/ProductMedia.schema'
 
 // Load environment variables from the .env file
 dotenv.config()
@@ -73,6 +74,10 @@ class DatabaseServices {
   //
   get products(): Collection<Product> {
     return this.db.collection(process.env.DB_PRODUCTS_COLLECTION as string)
+  }
+  //
+  get productMedias(): Collection<ProductMedia> {
+    return this.db.collection(process.env.DB_PRODUCTS_MEDIA_COLLECTION as string)
   }
 
   //create index

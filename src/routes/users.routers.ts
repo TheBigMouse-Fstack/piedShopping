@@ -92,7 +92,11 @@ userRouter.get(
 // Path: /users/resend-verify-email
 // Method: POST
 // Header: { Authorization: 'Bearer <access_token>' }
-userRouter.post('/resend-verify-email', accessTokenValidator, wrapAsync(resendVerifyEmailController))
+userRouter.post(
+  '/resend-verify-email',
+  accessTokenValidator, //
+  wrapAsync(resendVerifyEmailController)
+)
 
 // ========================== PASSWORD RESET ROUTES ==========================
 
@@ -100,13 +104,21 @@ userRouter.post('/resend-verify-email', accessTokenValidator, wrapAsync(resendVe
 // Path: /users/forgot-password
 // Method: POST
 // Body: { email }
-userRouter.post('/forgot-password', forgotPassWordValidator, wrapAsync(forgotPasswordController))
+userRouter.post(
+  '/forgot-password',
+  forgotPassWordValidator, //
+  wrapAsync(forgotPasswordController)
+)
 
 // Verify forgot password token
 // Path: /users/verify-forgot-password
 // Method: POST
 // Body: { forgot_password_token }
-userRouter.post('/verify-forgot-password', forgotPassWordTokenValidator, wrapAsync(verifyForgotPasswordTokenController))
+userRouter.post(
+  '/verify-forgot-password',
+  forgotPassWordTokenValidator, //
+  wrapAsync(verifyForgotPasswordTokenController)
+)
 
 // Reset password
 // Path: /users/reset-password
@@ -156,7 +168,12 @@ path: /users/change-password
 header: { Authorization: 'Bearer <access_token>' }
 body: {old_password, password, new_confirm_password}
 */
-userRouter.put('/change-password', accessTokenValidator, changePasswordValidator, wrapAsync(changePasswordController))
+userRouter.put(
+  '/change-password',
+  accessTokenValidator, //
+  changePasswordValidator,
+  wrapAsync(changePasswordController)
+)
 
 /*
 desc: refresh-token : xin người dùng hết hạn access token thì họ sẽ gửi
@@ -165,5 +182,9 @@ path: /users/refresh-token
 Method: POST
 body: {refresh_token : String}
 */
-userRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshTokenController))
+userRouter.post(
+  '/refresh-token',
+  refreshTokenValidator, //
+  wrapAsync(refreshTokenController)
+)
 export default userRouter

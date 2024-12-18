@@ -15,7 +15,7 @@ interface ProductType {
   height: number
   width: number
   sold?: number
-  status: PRODUCT_STATUS
+  status?: PRODUCT_STATUS
   category_id: ObjectId
   ship_category_id: ObjectId
 }
@@ -33,8 +33,8 @@ export default class Product {
   weight: number
   height: number
   width: number
-  sold: number
-  status: PRODUCT_STATUS
+  sold?: number
+  status?: PRODUCT_STATUS
   category_id: ObjectId
   ship_category_id: ObjectId
   constructor(product: ProductType) {

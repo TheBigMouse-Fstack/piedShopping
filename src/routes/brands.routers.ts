@@ -1,7 +1,7 @@
 import express from 'express'
 import { createBrandController, getAllBrandController, getBrandByIdController } from '~/controllers/brands.controllers'
 import { createBrandValidator } from '~/middlewares/brands.middlewares'
-import { accessTokenValidator } from '~/middlewares/users.middlewares'
+import { accessTokenValidator, idMongoParamValidator } from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handlers'
 
 const brandRouter = express.Router()
@@ -26,7 +26,7 @@ brandRouter.post(
 method: GET
 path: /brands/:id
 */
-brandRouter.get('/:id', wrapAsync(getBrandByIdController))
+brandRouter.get('/:id', idMongoParamValidator, wrapAsync(getBrandByIdController))
 
 /* desc : get all brand
 method: GET

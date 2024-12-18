@@ -19,12 +19,12 @@ const nameCategorySchema: ParamSchema = {
   }
 }
 
-const descSchema: ParamSchema = {
+export const descSchema: ParamSchema = {
   notEmpty: {
     errorMessage: CATEGORIES_MESSAGE.DESCRIPTION_IS_REQUIRED
   },
   isString: {
-    errorMessage: CATEGORIES_MESSAGE.CATEGORY_NAME_MUST_BE_A_STRING
+    errorMessage: CATEGORIES_MESSAGE.DESCRIPTION_MUST_BE_A_STRING
   },
   trim: true,
   isLength: {

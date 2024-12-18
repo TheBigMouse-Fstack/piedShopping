@@ -8,6 +8,7 @@ import staticRouter from './routes/static.routers'
 import dotenv from 'dotenv'
 import brandRouter from './routes/brands.routers'
 import categoryRouter from './routes/categories.routers'
+import productRouter from './routes/products.routers'
 
 dotenv.config()
 
@@ -30,6 +31,7 @@ app.use('/medias', mediaRouter)
 app.use('/static', staticRouter)
 app.use('/brands', brandRouter)
 app.use('/categories', categoryRouter)
+app.use('/products', productRouter)
 
 app.use(defaultErrorHandler)
 // Lắng nghe cổng PORT

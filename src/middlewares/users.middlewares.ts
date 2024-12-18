@@ -3,7 +3,7 @@ import { checkSchema, ParamSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
-import { REGEX_USERNAME } from '~/constants/regex'
+import { REGEX_EMAIL, REGEX_USERNAME } from '~/constants/regex'
 
 import { ErrorWithStatus } from '~/models/Errors'
 import { verifyToken } from '~/utils/jwt'
@@ -27,6 +27,22 @@ const nameSchema: ParamSchema = {
     },
     errorMessage: USERS_MESSAGES.NAME_LENGTH_MUST_BE_FROM_1_TO_100
   }
+}
+
+// Email schema
+const emailSchema: ParamSchema = {
+  notEmpty: {
+    errorMessage: USERS_MESSAGES.EMAIL_IS_REQUIRED
+  },
+  custom: {
+    options: (value: string, { req }) => {
+      if (!REGEX_EMAIL.test(value)) {
+        throw new Error(USERS_MESSAGES.EMAIL_IS_INVALID)
+      }
+      return true
+    }
+  },
+  trim: true
 }
 
 // Password schema
@@ -143,45 +159,25 @@ const imageSchema: ParamSchema = {
   }
 }
 
+// Id Mongo
+
+const idMongoSchema: ParamSchema = {
+  isMongoId: {
+    errorMessage: USERS_MESSAGES.ID_MUST_BE_A_MONGO_ID
+  }
+}
+
 // ========================== VALIDATORS ==========================
 
 // Register Validator
 export const registerValidator = validate(
   checkSchema(
     {
-      name: {
-        notEmpty: {
-          errorMessage: USERS_MESSAGES.NAME_IS_REQUIRED
-        },
-        isString: {
-          errorMessage: USERS_MESSAGES.NAME_MUST_BE_A_STRING
-        },
-        trim: true,
-        isLength: {
-          options: {
-            min: 1,
-            max: 100
-          },
-          errorMessage: USERS_MESSAGES.NAME_LENGTH_MUST_BE_FROM_1_TO_100
-        }
-      },
-      email: {
-        notEmpty: {
-          errorMessage: USERS_MESSAGES.EMAIL_IS_REQUIRED
-        },
-        isEmail: true,
-        trim: true
-      },
+      name: nameSchema,
+      email: emailSchema,
       password: passwordSchema,
       confirm_password: confirmPasswordSchema,
-      date_of_birth: {
-        isISO8601: {
-          options: {
-            strict: true,
-            strictSeparator: true
-          }
-        }
-      }
+      date_of_birth: dateOfBirthSchema
     },
     ['body']
   )
@@ -191,13 +187,7 @@ export const registerValidator = validate(
 export const loginValidator = validate(
   checkSchema(
     {
-      email: {
-        notEmpty: {
-          errorMessage: USERS_MESSAGES.EMAIL_IS_REQUIRED
-        },
-        isEmail: true,
-        trim: true
-      },
+      email: emailSchema,
       password: passwordSchema
     },
     ['body']
@@ -309,13 +299,7 @@ export const emailVerifyTokenValidator = validate(
 export const forgotPassWordValidator = validate(
   checkSchema(
     {
-      email: {
-        notEmpty: {
-          errorMessage: USERS_MESSAGES.EMAIL_IS_REQUIRED
-        },
-        isEmail: true,
-        trim: true
-      }
+      email: emailSchema
     },
     ['body']
   )
@@ -427,6 +411,7 @@ export const updateMeValidator = validate(
   )
 )
 
+// Change Password Validator
 export const changePasswordValidator = validate(
   checkSchema(
     {
@@ -435,5 +420,14 @@ export const changePasswordValidator = validate(
       confirm_password: confirmPasswordSchema
     },
     ['body']
+  )
+)
+
+export const idMongoParamValidator = validate(
+  checkSchema(
+    {
+      id: idMongoSchema
+    },
+    ['params']
   )
 )
